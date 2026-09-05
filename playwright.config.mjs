@@ -9,6 +9,7 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:4174",
     // CI renders WebGL on the CPU. Keep the real renderer enabled at a modest viewport.
     viewport: { width: 960, height: 640 },
+    deviceScaleFactor: 0.5,
     launchOptions: {
       args: [
         "--use-gl=angle",
