@@ -1,0 +1,10 @@
+/target/
+/node_modules/
+/test-results/
+.DS_Store
+/dist/
+
+.work/
+
+/playwright-report/
+/blob-report/

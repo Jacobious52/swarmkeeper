@@ -1,0 +1,19 @@
+{
+  "name": "swarmkeeper",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "sh scripts/build.sh",
+    "test": "cargo test --release",
+    "check": "node --check web/main.js && node --check web/renderer.js && node --check web/audio.js && node --check web/feedback.js",
+    "package": "node scripts/package.mjs",
+    "format:check": "prettier --check web/*.js web/*.html web/*.css scripts/*.mjs tests/*.mjs playwright.config.mjs .github/workflows/*.yml package.json",
+    "test:browser": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "prettier": "^3.9.6"
+  }
+}

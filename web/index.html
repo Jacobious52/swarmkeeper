@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#06171b" />
+    <meta
+      name="description"
+      content="A thousand bodies. One instinct. A living, procedural swarm ecosystem powered by Rust and WebAssembly."
+    />
+    <title>Swarmkeeper — A thousand bodies. One instinct.</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%2306171b'/%3E%3Cg fill='%2389efd0'%3E%3Cellipse cx='20' cy='13' rx='3' ry='8' transform='rotate(30 20 20)'/%3E%3Cellipse cx='12' cy='24' rx='3' ry='8' transform='rotate(-45 12 24)'/%3E%3Cellipse cx='27' cy='25' rx='3' ry='8' transform='rotate(50 27 25)'/%3E%3C/g%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <canvas
+      id="world"
+      aria-label="Procedurally simulated underwater swarm ecosystem"
+    ></canvas
+    ><canvas id="overlay" aria-hidden="true"></canvas>
+    <div class="vignette"></div>
+    <header>
+      <a class="wordmark" href="./" aria-label="Swarmkeeper home"
+        ><svg viewBox="0 0 32 32" fill="none">
+          <path
+            d="M16 3c-7 7-7 17 0 26M16 3c7 7 7 17 0 26M3 16c7-7 19-7 26 0M3 16c7 7 19 7 26 0"
+            stroke="currentColor"
+          />
+          <circle cx="16" cy="16" r="3" fill="currentColor" /></svg
+        >SWARMKEEPER<span class="edition">/ &nbsp; A LIVING EXPERIMENT</span></a
+      >
+      <div class="header-actions">
+        <span id="live-label"><i></i> ECOSYSTEM LIVE</span
+        ><button
+          id="sound"
+          class="icon-button"
+          aria-label="Enable sound"
+          title="Toggle sound · M"
+        >
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M11 5 6 9H3v6h3l5 4V5Zm5 3c2 2 2 6 0 8m3-11c4 4 4 10 0 14"
+            /></svg
+          ><span id="sound-label">SOUND OFF</span></button
+        ><button
+          id="pause"
+          class="icon-button hidden"
+          aria-label="Pause game"
+          title="Pause · Escape"
+        >
+          <svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14" /></svg>
+        </button>
+      </div>
+    </header>
+    <main id="intro">
+      <div class="intro-content">
+        <div class="eyebrow">
+          <span class="small-line"></span> BENEATH THE SURFACE
+        </div>
+        <h1>A thousand bodies.<br /><em>One instinct.</em></h1>
+        <p class="intro-copy">
+          You are the swarm.<br />Feed. Adapt. Become something extraordinary.
+        </p>
+        <button id="start" class="primary" disabled>
+          <span id="start-label">AWAKENING ECOSYSTEM</span
+          ><span class="arrow">↗</span>
+        </button>
+        <div class="audio-note">
+          <svg viewBox="0 0 24 24">
+            <path
+              d="M4 14v-3a8 8 0 0 1 16 0v3M4 12H2v7h4v-7H4Zm16 0h2v7h-4v-7h2Z"
+            />
+          </svg>
+          Best experienced with headphones
+        </div>
+      </div>
+      <div class="specimen-tag">
+        <span class="tag-line"></span
+        ><span>COLLECTIVE 001<b>Many lives. A single will.</b></span>
+      </div>
+      <div class="intro-bottom">
+        <span><i></i> EVERY ORGANISM IS SIMULATED</span
+        ><span>NO SPRITES. NO TWO MOMENTS ALIKE.</span
+        ><span class="coordinates"
+          >ABYSSAL FIELD NOTES &nbsp; / &nbsp; VOL. 01</span
+        >
+      </div>
+    </main>
+    <div id="hud" class="hidden">
+      <section id="lesson-panel" class="lesson-panel hidden" aria-live="polite">
+        <div class="eyebrow" id="lesson-step">PROTECTED NURSERY · 01 / 05</div>
+        <h2 id="lesson-title">You are the current.</h2>
+        <p id="lesson-copy"></p>
+        <div class="lesson-track"><i id="lesson-fill"></i></div>
+        <p class="lesson-task" id="lesson-task"></p>
+        <div class="lesson-actions">
+          <button id="lesson-next" disabled>CONTINUE ↗</button
+          ><button id="lesson-skip">Skip learning</button>
+        </div>
+      </section>
+      <section id="target-panel" class="target-panel hidden">
+        <div class="eyebrow">NEARBY ORGANISM</div>
+        <h3 id="target-name"></h3>
+        <div id="target-state"></div>
+        <div class="target-track"><i id="target-fill"></i></div>
+        <small id="target-health"></small>
+        <p id="target-tip"></p>
+      </section>
+      <div id="symbiosis" class="hidden">
+        <button id="absorb">C · ABSORB ESCORTS</button>
+      </div>
+      <div id="formation" class="formation">
+        <span id="formation-name">FLOW</span
+        ><small id="formation-detail"
+          >Balanced movement · instinctive avoidance</small
+        >
+      </div>
+      <div id="boss-health" class="boss-health hidden">
+        <span id="boss-state">THE LEVIATHAN</span>
+        <div><i id="boss-fill"></i></div>
+      </div>
+      <div class="biome">
+        <span id="biome-name">THE LUMINOUS SHALLOWS</span
+        ><small
+          ><span id="depth">DEPTH 0240 M</span><span class="dot">·</span
+          ><span id="timer">00:00</span></small
+        >
+      </div>
+      <section class="population">
+        <div class="eyebrow">THE COLLECTIVE</div>
+        <div class="population-number">
+          <span id="population">160</span
+          ><span class="population-unit">organisms</span>
+        </div>
+        <div class="capacity-row">
+          <span id="capacity-number">/ 1,200 capacity</span>
+        </div>
+        <div class="capacity-track"><i id="capacity-fill"></i></div>
+        <div id="capacity-note">
+          +600 per nursery · Vast Chorus unlocks 8,000
+        </div>
+        <div class="growth-track"><i id="growth-fill"></i></div>
+        <div class="growth-label">
+          <span id="stage-label">I · EMERGENCE</span
+          ><span id="evolution-progress">0 / 75</span>
+        </div>
+        <div id="next-evolution"></div>
+        <div id="trait-chips"></div>
+        <button id="inspect">TAB · ADAPTATIONS & CONTROLS</button>
+        <div class="combat-readout" id="combat-readout">
+          <span id="growth-rate"></span><span id="loss-rate"></span
+          ><span id="damage-rate"></span>
+        </div>
+      </section>
+      <section class="objective">
+        <div class="objective-icon">✧</div>
+        <div>
+          <div class="eyebrow" id="objective-kicker">INSTINCT 01 / FEED</div>
+          <h3 id="objective-title">Find the golden blooms</h3>
+          <p id="objective-detail">Follow your cursor. Let the swarm feed.</p>
+          <div class="nursery-dots">
+            <i></i><i></i><i></i
+            ><span id="nursery-count">0 / 3 NURSERIES AWAKENED</span>
+          </div>
+        </div>
+      </section>
+      <div id="toast" role="status"></div>
+      <div class="bottom-controls">
+        <div class="control">
+          <span class="mouse-glyph">↖</span><span>GUIDE</span>
+        </div>
+        <div class="control">
+          <kbd>LMB</kbd><span id="attack-label">HOLD · BITE</span>
+        </div>
+        <div class="control">
+          <kbd>RMB</kbd><span id="spread-label">SPREAD</span>
+        </div>
+        <div class="control"><kbd>SHIFT</kbd><span>EVADE</span></div>
+        <button id="pulse" class="pulse-button">
+          <kbd>SPACE</kbd><span id="pulse-label">RESONANCE</span
+          ><i id="pulse-fill"></i>
+        </button>
+      </div>
+      <div class="energy">
+        <span>VITAL ENERGY</span>
+        <div><i id="energy-fill"></i></div>
+      </div>
+      <div class="map-label">
+        <i></i> <span id="map-label">SHALLOWS</span><span>N ↑</span>
+      </div>
+      <button id="evolve-prompt" class="hidden">
+        EVOLUTION AVAILABLE <kbd>E</kbd>
+      </button>
+    </div>
+    <div id="evolution" class="modal hidden">
+      <div class="modal-inner">
+        <div class="eyebrow" id="evolution-step">A NEW WAY TO BE ALIVE</div>
+        <h2>Follow an instinct.</h2>
+        <p id="evolution-subtitle">Your collective remembers every choice.</p>
+        <div id="evolution-earned"></div>
+        <div id="choices"></div>
+        <button id="other-instincts">R · EXPLORE OTHER INSTINCTS</button
+        ><button id="evolution-inspect" class="text-button">
+          Inspect your collective
+        </button>
+        <div class="modal-foot">
+          CHOOSE WITH 1, 2, 3 &nbsp; · &nbsp; THE ECOSYSTEM IS PAUSED
+        </div>
+      </div>
+    </div>
+    <div id="pause-modal" class="modal hidden">
+      <div class="modal-inner journal">
+        <div class="journal-header">
+          <div>
+            <div class="eyebrow">A MOMENT OF STILLNESS</div>
+            <h2>Your living collective.</h2>
+            <p id="journal-summary"></p>
+          </div>
+          <button id="resume" class="primary">RETURN · ESC ↗</button>
+        </div>
+        <div id="journal-path" class="journal-path"></div>
+        <p id="journal-next"></p>
+        <div class="journal-controls">
+          <span><kbd>MOVE</kbd> Guide / WASD</span
+          ><span><kbd>LMB</kbd> Bite / click Tidal Fang</span
+          ><span><kbd>RMB</kbd> Forage</span><span><kbd>SHIFT</kbd> Evade</span
+          ><span><kbd>SPACE</kbd> Counter white flash</span
+          ><span><kbd>C</kbd> Absorb escorts</span>
+        </div>
+        <div id="journal-owned"></div>
+        <p id="journal-synergy"></p>
+        <div class="eyebrow">INSTINCTS OF THIS ECOSYSTEM</div>
+        <div id="journal-available"></div>
+        <div class="journal-footer">
+          <button id="restart" class="text-button">Begin a new life</button
+          ><button id="learn-again" class="text-button">
+            Replay the protected nursery
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="end" class="modal hidden">
+      <div class="modal-inner compact">
+        <div class="eyebrow" id="end-kicker">THE CYCLE CONTINUES</div>
+        <h2 id="end-title">Nothing living<br />is ever lost.</h2>
+        <p id="end-copy"></p>
+        <button id="again" class="primary">
+          <span>BEGIN ANOTHER LIFE</span><span>↗</span>
+        </button>
+      </div>
+    </div>
+    <div id="error" class="modal hidden">
+      <div class="modal-inner compact">
+        <div class="eyebrow">UNABLE TO ENTER THE NURSERY</div>
+        <h2>A little turbulence.</h2>
+        <p id="error-message"></p>
+        <button class="primary" onclick="location.reload()">TRY AGAIN ↗</button>
+      </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
