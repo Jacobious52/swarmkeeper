@@ -1,13 +1,14 @@
 import { defineConfig } from "@playwright/test";
 export default defineConfig({
   testDir: "./tests",
-  timeout: 90000,
+  timeout: 150000,
   workers: 1,
   retries: process.env.CI ? 1 : 0,
   reporter: "list",
   use: {
     baseURL: "http://127.0.0.1:4174",
-    viewport: { width: 1280, height: 900 },
+    // CI renders WebGL on the CPU. Keep the real renderer enabled at a modest viewport.
+    viewport: { width: 960, height: 640 },
     launchOptions: {
       args: [
         "--use-gl=angle",

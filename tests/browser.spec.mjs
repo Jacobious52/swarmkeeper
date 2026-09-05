@@ -34,7 +34,19 @@ test("the static build opens, pauses evolution while music continues, and resume
       g.intent(x, y, 2);
     }, 100);
   });
-  await expect(page.locator("#evolution")).toBeVisible({ timeout: 80000 });
+  try {
+    await expect(page.locator("#evolution")).toBeVisible({ timeout: 120000 });
+  } catch (error) {
+    console.log(
+      "Evolution timeout state:",
+      await page.evaluate(() => ({
+        state: swarmkeeper.state,
+        stats: swarmkeeper.stats,
+        metrics: swarmkeeper.metrics,
+      })),
+    );
+    throw error;
+  }
   const before = await page.evaluate(() => ({
     time: swarmkeeper.stats[6],
     audio: swarmkeeper.audio,
